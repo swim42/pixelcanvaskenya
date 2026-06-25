@@ -73,5 +73,5 @@ The contact form is currently set up with client-side validation. To enable actu
 
 ## License
 
-© 2025 Pixel Canvas Kenya. All rights reserved.
+© 2026 Pixel Canvas Kenya. All rights reserved.
 
