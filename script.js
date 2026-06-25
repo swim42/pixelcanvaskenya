@@ -44,7 +44,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Contact Form Handling
+// Contact Form Handling with Formspree
 const contactForm = document.getElementById('contactForm');
 const formMessage = document.getElementById('formMessage');
 
@@ -54,7 +54,6 @@ if (contactForm) {
         
         // Get form data
         const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData);
         
         // Show loading state
         const submitBtn = contactForm.querySelector('.submit-btn');
@@ -62,51 +61,41 @@ if (contactForm) {
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
         
-        // Simulate form submission (replace with actual API call)
-        setTimeout(() => {
-            // Show success message
-            formMessage.textContent = 'Thanks! We\'ll be in touch ASAP.';
-            formMessage.className = 'form-message success';
-            
-            // Reset form
-            contactForm.reset();
-            
-            // Reset button
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                formMessage.className = 'form-message';
-            }, 5000);
-        }, 1000);
-        
-        // For actual implementation, you would do:
-        /*
         try {
-            const response = await fetch('/api/contact', {
+            const response = await fetch(contactForm.action, {
                 method: 'POST',
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+                    'Accept': 'application/json'
+                }
             });
             
             if (response.ok) {
+                // Show success message
                 formMessage.textContent = 'Thanks! We\'ll be in touch ASAP.';
                 formMessage.className = 'form-message success';
+                
+                // Reset form
                 contactForm.reset();
+                
+                // Scroll to message
+                formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formMessage.className = 'form-message';
+                }, 5000);
             } else {
                 throw new Error('Form submission failed');
             }
         } catch (error) {
             formMessage.textContent = 'Our bad! That didn\'t go through… Try reloading and reentering.';
             formMessage.className = 'form-message error';
+            console.error('Form error:', error);
         } finally {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
         }
-        */
     });
 }
 
@@ -223,4 +212,3 @@ document.querySelectorAll('a[href^="tel:"]').forEach(link => {
 
 // Console log for debugging
 console.log('Pixel Canvas Kenya website loaded successfully!');
-
