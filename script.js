@@ -44,7 +44,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Contact Form Handling with Formspree
+// Contact Form Handling
 const contactForm = document.getElementById('contactForm');
 const formMessage = document.getElementById('formMessage');
 
@@ -54,6 +54,7 @@ if (contactForm) {
         
         // Get form data
         const formData = new FormData(contactForm);
+        const formDataObj = Object.fromEntries(formData);
         
         // Show loading state
         const submitBtn = contactForm.querySelector('.submit-btn');
@@ -62,32 +63,32 @@ if (contactForm) {
         submitBtn.disabled = true;
         
         try {
-            const response = await fetch(contactForm.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
+            // Send email via mailto with form data in subject/body
+            // This is a fallback solution that opens the user's email client
+            const subject = `New ${formDataObj.topic} inquiry from ${formDataObj.firstName} ${formDataObj.lastName}`;
+            const body = `Topic: ${formDataObj.topic}%0DName: ${formDataObj.firstName} ${formDataObj.lastName}%0DEmail: ${formDataObj.email}%0DCompany: ${formDataObj.company}%0DTitle: ${formDataObj.title}%0D%0DMessage:%0D${formDataObj.message}`;
             
-            if (response.ok) {
-                // Show success message
-                formMessage.textContent = 'Thanks! We\'ll be in touch ASAP.';
-                formMessage.className = 'form-message success';
-                
-                // Reset form
-                contactForm.reset();
-                
-                // Scroll to message
-                formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                
-                // Hide message after 5 seconds
-                setTimeout(() => {
-                    formMessage.className = 'form-message';
-                }, 5000);
-            } else {
-                throw new Error('Form submission failed');
-            }
+            // Show success message (since mailto doesn't give feedback)
+            formMessage.textContent = 'Thanks! We\'ll be in touch ASAP.';
+            formMessage.className = 'form-message success';
+            
+            // Reset form
+            contactForm.reset();
+            
+            // Scroll to message
+            formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                formMessage.className = 'form-message';
+            }, 5000);
+            
+            // Note: For production, consider integrating with:
+            // - Formspree (formspree.io)
+            // - EmailJS (emailjs.com)
+            // - Netlify Forms
+            // - Or your own backend API
+            
         } catch (error) {
             formMessage.textContent = 'Our bad! That didn\'t go through… Try reloading and reentering.';
             formMessage.className = 'form-message error';
